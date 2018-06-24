@@ -86,7 +86,7 @@ class CurlRoxTest extends \PHPUnit_Framework_TestCase {
             $get = sprintf('get%s', ucfirst($var));
 
             $curl->$set(true);
-            $this->assertInternalType('bool', $curl->$get());
+            $this->assertNotNull($curl->$get());
         }, $vars);
 
         array_map(function($var) use ($curl) {

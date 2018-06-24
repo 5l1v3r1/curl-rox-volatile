@@ -183,8 +183,10 @@ class Curl extends OObject
     {
         $this->postPayload = $postPayload;
 
-        if (is_array($postPayload))
+        if (is_array($postPayload) || $postPayload instanceof \Volatile) {
+            $postPayload = (array) $postPayload;
             $this->postPayload = http_build_query($postPayload);
+        }
 
         return $this;
     }
@@ -198,11 +200,7 @@ class Curl extends OObject
     public function getRequest()
     {
         $ch   = curl_init($this->getUri());
-        $opts = $this->prepareOpts();
-
-        curl_setopt_array(
-            $ch, $opts
-        );
+        $this->prepareOpts($ch);
 
         $this->httpResponse = curl_exec($ch);
         $this->httpInfo     = curl_getinfo($ch);
@@ -224,11 +222,7 @@ class Curl extends OObject
     public function postRequest()
     {
         $ch   = curl_init($this->getUri());
-        $opts = $this->prepareOpts(true);
-
-        curl_setopt_array(
-            $ch, $opts
-        );
+        $this->prepareOpts($ch, true);
 
         $this->httpResponse = curl_exec($ch);
         $this->httpInfo     = curl_getinfo($ch);
@@ -343,41 +337,56 @@ class Curl extends OObject
     }
 
     /**
+     * Cast httpHeaders to array. Multithread workaround
+     * 
+     * @return array
+     */
+    public function getHttpHeaders() {
+        return (array) $this->httpHeaders;
+    }
+
+    /**
+     * Allow StdClass due pthreads volatile convertion
+     * 
+     * @param \StdClass $httpHeaders
+     * @return void
+     */ 
+    public function setHttpHeaders($httpHeaders) {
+        $this->httpHeaders = (array) $httpHeaders;
+    }
+
+    /**
      * Prepare opts to request
      *
      * @param boolean $isPost
      * @return array
      */
-    private function prepareOpts($isPost = false)
+    private function prepareOpts($ch, $isPost = false)
     {
         $timeout    = $this->getTimeout();
         $cookieFile = $this->getCookieFile();
-
-        $this->opts = [
-            CURLOPT_RETURNTRANSFER => $this->getRaw(),
-            CURLOPT_FOLLOWLOCATION => $this->getFollowLocation(),
-            CURLOPT_USERAGENT      => $this->getUserAgent(),
-            CURLOPT_TIMEOUT        => $timeout,
-            CURLOPT_CONNECTTIMEOUT => $timeout,
-            CURLOPT_COOKIEJAR      => $cookieFile,
-            CURLOPT_COOKIEFILE     => $cookieFile,
-            CURLOPT_AUTOREFERER    => $this->getAutoReferer(),
-            CURLOPT_HTTPHEADER     => $this->getHttpHeaders(),
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false
-        ];
+        
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, $this->getRaw());
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $this->getFollowLocation());
+        curl_setopt($ch, CURLOPT_USERAGENT, $this->getUserAgent());
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $cookieFile);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, $this->getAutoReferer());
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $this->getHttpHeaders());
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
         if ($this->getCheckSsl()) {
-            $this->opts[CURLOPT_SSL_VERIFYPEER] = true;
-            $this->opts[CURLOPT_SSL_VERIFYHOST] = 2;
-            $this->opts[CURLOPT_CAINFO]         = $this->getCaCert();
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            curl_setopt($ch, CURLOPT_CAINFO, $this->getCaCert());
         }
 
         if ($isPost !== false) {
-            $this->opts[CURLOPT_POST]       = true;
-            $this->opts[CURLOPT_POSTFIELDS] = $this->getPostPayload();
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getPostPayload());
         }
-
-        return $this->opts;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace CurlRox\Core;
 
-class OObject {
+class OObject extends \Volatile {
     /**
      * Dinamic call to get and setters
      *
