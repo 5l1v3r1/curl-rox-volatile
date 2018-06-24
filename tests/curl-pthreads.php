@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use CurlRox\Curl;
+use CurlRoxVolatile\Curl;
 $pool = new Pool(2);
 foreach(['http://google.com', 'http://twitter.com'] as $url) {
     $anonClass = new class(new Curl, $url) extends Threaded {

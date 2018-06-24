@@ -1,6 +1,6 @@
 <?php
 
-namespace CurlRox\Core;
+namespace CurlRoxVolatile\Core;
 
 class OObject extends \Volatile {
     /**

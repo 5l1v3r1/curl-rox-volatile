@@ -1,7 +1,7 @@
 <?php
 
 
-class CurlRoxTest extends \PHPUnit_Framework_TestCase {
+class CurlRoxVolatileTest extends \PHPUnit_Framework_TestCase {
 
     public function testExtensionsLoaded()
     {
@@ -10,13 +10,13 @@ class CurlRoxTest extends \PHPUnit_Framework_TestCase {
 
     public function testGetAndPostRequest()
     {
-        $curl = new \CurlRox\Curl;
+        $curl = new \CurlRoxVolatile\Curl;
         $curl->setUri('http://127.0.0.1:8000/server.php');
         $curl->getRequest();
         $response = $curl->getHttpResponse();
         $this->assertNotNull($response);
 
-        $curl = new \CurlRox\Curl;
+        $curl = new \CurlRoxVolatile\Curl;
         $curl->setUri('http://127.0.0.1:8000/server.php');
         $curl->setPostPayload([
             'test' => '1',
@@ -31,7 +31,7 @@ class CurlRoxTest extends \PHPUnit_Framework_TestCase {
 
     public function testCookieFile()
     {
-        $curl = new \CurlRox\Curl;
+        $curl = new \CurlRoxVolatile\Curl;
         $curl->setUri('http://127.0.0.1:8000/server.php');
         $curl->getRequest();
 
@@ -41,10 +41,10 @@ class CurlRoxTest extends \PHPUnit_Framework_TestCase {
 
     public function testDomIstanceOf()
     {
-        $curl = new \CurlRox\Curl;
+        $curl = new \CurlRoxVolatile\Curl;
         $curl->setUri('http://127.0.0.1:8000/server.php?test');
         $curl->getRequest();
-        $curl->setCallback(function($http_response, \DiDom\Document $dom, \CurlRox\Curl $curl_rox){
+        $curl->setCallback(function($http_response, \DiDom\Document $dom, \CurlRoxVolatile\Curl $curl_rox){
             $elements = $dom->find('a');
 
             foreach ($elements as $element) {
@@ -55,7 +55,7 @@ class CurlRoxTest extends \PHPUnit_Framework_TestCase {
 
     public function testJsonResponse()
     {
-        $curl = new \CurlRox\Curl;
+        $curl = new \CurlRoxVolatile\Curl;
         $curl->setUri('http://127.0.0.1:8000/server.php');
         $curl->setPostPayload(['test' => '1', 'foo' => 'bar']);
         $curl->postRequest();
@@ -66,7 +66,7 @@ class CurlRoxTest extends \PHPUnit_Framework_TestCase {
     public function testDebugTo()
     {
         $fileName = 'debug.txt';
-        $curl = new \CurlRox\Curl;
+        $curl = new \CurlRoxVolatile\Curl;
         $curl->setUri('http://127.0.0.1:8000/server.php');
         $curl->setPostPayload(['test' => '1', 'foo' => 'bar']);
         $curl->postRequest();
@@ -78,7 +78,7 @@ class CurlRoxTest extends \PHPUnit_Framework_TestCase {
 
     public function testPublicGettersAndSetters()
     {
-        $curl = new \CurlRox\Curl;
+        $curl = new \CurlRoxVolatile\Curl;
         $vars = array_keys(get_object_vars($curl));
 
         array_map(function($var) use ($curl) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace CurlRox\Core;
+namespace CurlRoxVolatile\Core;
 
 class CurlEnum {
     const HTTP_CODE_OK             = 200;

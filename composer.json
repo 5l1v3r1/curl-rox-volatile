@@ -1,7 +1,7 @@
 {
-    "name": "proclnas/curl-rox",
-    "description": "Just another curl wrapper for webCrawling purposes",
-    "homepage": "https://github.com/proclnas/curl-rox",
+    "name": "proclnas/curl-rox-volatile",
+    "description": "Just another curl wrapper for webCrawling purposes (pthreads modified)",
+    "homepage": "https://github.com/proclnas/curl-rox-volatile",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -24,7 +24,7 @@
     },
     "autoload": {
       "psr-4": {
-        "CurlRox\\": "src/CurlRox/"
+        "CurlRoxVolatile\\": "src/CurlRoxVolatile/"
       }
     }
 }

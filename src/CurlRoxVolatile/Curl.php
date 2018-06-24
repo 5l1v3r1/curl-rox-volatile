@@ -1,10 +1,10 @@
 <?php
 
-namespace CurlRox;
+namespace CurlRoxVolatile;
 
 use DiDom\Document;
-use CurlRox\Core\OObject;
-use CurlRox\Core\CurlEnum;
+use CurlRoxVolatile\Core\OObject;
+use CurlRoxVolatile\Core\CurlEnum;
 
 class Curl extends OObject
 {
